@@ -13,10 +13,30 @@ public class MessiMessageDecoder implements MessageDecoder{
     }
 
     private String decodeAtreidesMessage(String encodedMessage) {
-        return null;
+        return decodeAsciiShift(encodedMessage, 3);
     }
 
     private String decodeHarkonnenMessage(String encodedMessage) {
-        return null;
+        return decodeAsciiShift(encodedMessage, -2);
+    }
+
+    private String decodeAsciiShift(String encodedMessage, int shift) {
+        StringBuilder decodedMessage = new StringBuilder();
+        for (char character : encodedMessage.toCharArray()) {
+            if (Character.isLetter(character)) {
+                char shiftedChar = (char) (character + shift);
+                if ((Character.isLowerCase(character) && shiftedChar < 'a') ||
+                        (Character.isUpperCase(character) && shiftedChar < 'A')) {
+                    shiftedChar += 26;
+                } else if ((Character.isLowerCase(character) && shiftedChar > 'z') ||
+                        (Character.isUpperCase(character) && shiftedChar > 'Z')) {
+                    shiftedChar -= 26;
+                }
+                decodedMessage.append(shiftedChar);
+            } else {
+                decodedMessage.append(character);
+            }
+        }
+        return decodedMessage.toString();
     }
 }
